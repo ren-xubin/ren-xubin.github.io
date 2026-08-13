@@ -22,5 +22,8 @@
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
     {% endif %}
+    {% if jekyll.environment == "production" %}
+    <script data-goatcounter="https://xubinren.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+    {% endif %}
     {% feed_meta %}
 </head>
