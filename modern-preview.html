@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Xubin Ren · Editorial Preview</title>
+    <link rel="icon" href="images/me.png" type="image/png">
+    <script>
+        history.scrollRestoration = 'manual';
+        if (new URLSearchParams(location.search).get('device') === 'mobile') {
+            document.documentElement.classList.add('mobile-canvas');
+        }
+        window.addEventListener('pageshow', () => window.scrollTo(0, 0));
+    </script>
+    <style>
+        html, body {
+            margin: 0;
+            min-height: 100%;
+            background: #ffffff;
+        }
+
+        #preview {
+            display: block;
+            width: 100%;
+            min-height: 100vh;
+            border: 0;
+        }
+
+        html.mobile-canvas,
+        .mobile-canvas body,
+        .mobile-canvas #preview {
+            width: 390px;
+        }
+
+        html.mobile-canvas,
+        .mobile-canvas body {
+            overflow-x: hidden;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="preview" src="index.html" title="Modern homepage preview"></iframe>
+    <script>
+        const preview = document.getElementById('preview');
+
+        preview.addEventListener('load', () => {
+            const page = preview.contentDocument;
+            const viewport = page.createElement('meta');
+            const stylesheet = page.createElement('link');
+
+            viewport.name = 'viewport';
+            viewport.content = 'width=device-width, initial-scale=1';
+            stylesheet.rel = 'stylesheet';
+            stylesheet.href = `modern-preview.css?v=${encodeURIComponent(new URLSearchParams(location.search).get('v') || 'preview')}`;
+
+            page.head.append(viewport, stylesheet);
+            page.body.classList.add('modern-preview');
+
+            const ambientCanvas = page.createElement('canvas');
+            ambientCanvas.className = 'ambient-field';
+            ambientCanvas.setAttribute('aria-hidden', 'true');
+            ambientCanvas.dataset.interactive = 'true';
+            page.body.prepend(ambientCanvas);
+
+            const ambientPointer = { x: -1000, y: -1000, active: false };
+            const ambientRipples = [];
+            const updateAmbientPointer = (event) => {
+                ambientPointer.x = event.pageX;
+                ambientPointer.y = event.pageY;
+                ambientPointer.active = true;
+                ambientCanvas.dataset.pointer = 'active';
+            };
+
+            page.defaultView.addEventListener('pointermove', updateAmbientPointer, { passive: true });
+            page.defaultView.addEventListener('pointerdown', (event) => {
+                updateAmbientPointer(event);
+                if (event.pageY <= ambientCanvas.offsetHeight) {
+                    ambientRipples.push({
+                        x: event.pageX,
+                        y: event.pageY,
+                        startedAt: page.defaultView.performance.now()
+                    });
+                }
+            }, { passive: true });
+            page.defaultView.addEventListener('pointerout', (event) => {
+                if (!event.relatedTarget) {
+                    ambientPointer.active = false;
+                    ambientCanvas.dataset.pointer = 'idle';
+                }
+            });
+
+            const paintAmbientField = () => {
+                const context = ambientCanvas.getContext('2d');
+                const reduceMotion = page.defaultView.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const pixelRatio = Math.min(page.defaultView.devicePixelRatio || 1, 1.5);
+                const width = page.documentElement.clientWidth;
+                const height = Math.min(Math.max(page.defaultView.innerHeight * 0.88, 620), 820);
+                let frame = 0;
+                let animationFrame;
+
+                ambientCanvas.width = Math.round(width * pixelRatio);
+                ambientCanvas.height = Math.round(height * pixelRatio);
+                ambientCanvas.style.height = `${height}px`;
+                context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+
+                const random = (() => {
+                    let seed = 12731;
+                    return () => {
+                        seed = (seed * 16807) % 2147483647;
+                        return (seed - 1) / 2147483646;
+                    };
+                })();
+                const clusters = width < 700
+                    ? [{ x: width * 0.86, y: height * 0.2, count: 16, spreadX: width * 0.28, spreadY: height * 0.2 }]
+                    : [
+                        { x: width * 0.09, y: height * 0.36, count: 18, spreadX: width * 0.13, spreadY: height * 0.22 },
+                        { x: width * 0.86, y: height * 0.2, count: 22, spreadX: width * 0.16, spreadY: height * 0.24 }
+                    ];
+                const nodes = clusters.flatMap((cluster, clusterIndex) =>
+                    Array.from({ length: cluster.count }, (_, index) => {
+                        const progress = Math.sqrt((index + 1) / cluster.count);
+                        const angle = index * 2.399963 + clusterIndex * 1.35;
+                        return {
+                            baseX: cluster.x + Math.cos(angle) * progress * cluster.spreadX,
+                            baseY: cluster.y + Math.sin(angle) * progress * cluster.spreadY,
+                            radius: index % 9 === 0 ? 5.5 + random() * 2.5 : 1.2 + random() * 1.6,
+                            warm: index === 9,
+                            cluster: clusterIndex,
+                            phase: angle + random() * 0.4
+                        };
+                    })
+                );
+
+                const draw = () => {
+                    context.clearRect(0, 0, width, height);
+                    const now = page.defaultView.performance.now();
+                    const time = now * 0.00042;
+
+                    while (ambientRipples.length && now - ambientRipples[0].startedAt > 1500) {
+                        ambientRipples.shift();
+                    }
+
+                    const positions = nodes.map((node) => {
+                        let x = node.baseX + (reduceMotion ? 0 : Math.cos(time + node.phase) * 5.2);
+                        let y = node.baseY + (reduceMotion ? 0 : Math.sin(time * 0.78 + node.phase) * 4.1);
+                        let interaction = 0;
+
+                        if (!reduceMotion && ambientPointer.active) {
+                            const pointerX = x - ambientPointer.x;
+                            const pointerY = y - ambientPointer.y;
+                            const pointerDistance = Math.max(Math.hypot(pointerX, pointerY), 1);
+                            if (pointerDistance < 180) {
+                                interaction = Math.pow(1 - pointerDistance / 180, 2);
+                                x += (pointerX / pointerDistance) * interaction * 46;
+                                y += (pointerY / pointerDistance) * interaction * 46;
+                            }
+                        }
+
+                        if (!reduceMotion) {
+                            ambientRipples.forEach((ripple) => {
+                                const age = now - ripple.startedAt;
+                                const rippleRadius = age * 0.16;
+                                const rippleX = x - ripple.x;
+                                const rippleY = y - ripple.y;
+                                const rippleDistance = Math.max(Math.hypot(rippleX, rippleY), 1);
+                                const ringDistance = Math.abs(rippleDistance - rippleRadius);
+                                if (ringDistance < 34) {
+                                    const rippleForce = (1 - ringDistance / 34) * (1 - age / 1500);
+                                    x += (rippleX / rippleDistance) * rippleForce * 18;
+                                    y += (rippleY / rippleDistance) * rippleForce * 18;
+                                    interaction = Math.max(interaction, rippleForce);
+                                }
+                            });
+                        }
+
+                        return { ...node, x, y, interaction };
+                    });
+
+                    positions.forEach((node, index) => {
+                        const previous = positions[index - 1];
+                        if (previous && previous.cluster === node.cluster) {
+                            context.beginPath();
+                            context.moveTo(previous.x, previous.y);
+                            context.lineTo(node.x, node.y);
+                            const lineEnergy = Math.max(previous.interaction, node.interaction);
+                            context.strokeStyle = `rgba(73, 87, 133, ${0.07 + lineEnergy * 0.12})`;
+                            context.lineWidth = 0.75;
+                            context.stroke();
+                        }
+
+                        positions.slice(index + 1).forEach((other) => {
+                            if (other.cluster !== node.cluster) return;
+                            const distance = Math.hypot(node.x - other.x, node.y - other.y);
+                            if (distance > 82) return;
+                            context.beginPath();
+                            context.moveTo(node.x, node.y);
+                            context.lineTo(other.x, other.y);
+                            const lineEnergy = Math.max(other.interaction, node.interaction);
+                            context.strokeStyle = `rgba(76, 91, 132, ${(0.08 + lineEnergy * 0.14) * (1 - distance / 82)})`;
+                            context.lineWidth = 0.65;
+                            context.stroke();
+                        });
+
+                        const pulse = reduceMotion ? 1 : 0.86 + Math.sin(time * 2.1 + node.phase) * 0.14 + node.interaction * 0.55;
+                        const halo = context.createRadialGradient(node.x, node.y, 0, node.x, node.y, node.radius * 3.2);
+                        const color = node.warm ? '220, 139, 70' : '88, 108, 169';
+                        halo.addColorStop(0, `rgba(${color}, ${0.3 * pulse})`);
+                        halo.addColorStop(0.22, `rgba(${color}, ${0.12 * pulse})`);
+                        halo.addColorStop(1, `rgba(${color}, 0)`);
+                        context.beginPath();
+                        context.arc(node.x, node.y, node.radius * 3.2, 0, Math.PI * 2);
+                        context.fillStyle = halo;
+                        context.fill();
+
+                        if (node.radius > 4) {
+                            context.beginPath();
+                            context.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                            context.strokeStyle = `rgba(${color}, ${0.14 * pulse})`;
+                            context.lineWidth = 0.8;
+                            context.stroke();
+                        }
+                    });
+
+                    ambientRipples.forEach((ripple) => {
+                        const age = now - ripple.startedAt;
+                        const radius = age * 0.16;
+                        const alpha = Math.max(0, (1 - age / 1500) * 0.17);
+                        context.beginPath();
+                        context.arc(ripple.x, ripple.y, radius, 0, Math.PI * 2);
+                        context.strokeStyle = `rgba(85, 103, 159, ${alpha})`;
+                        context.lineWidth = 1;
+                        context.stroke();
+                    });
+
+                    frame += 1;
+                    if (!reduceMotion && !page.hidden) animationFrame = page.defaultView.requestAnimationFrame(draw);
+                };
+
+                draw();
+                return () => page.defaultView.cancelAnimationFrame(animationFrame);
+            };
+
+            let stopAmbientField = paintAmbientField();
+            page.defaultView.addEventListener('resize', () => {
+                stopAmbientField();
+                stopAmbientField = paintAmbientField();
+            });
+
+            const nameImage = page.querySelector('img[src*="name.png"]');
+            if (nameImage) {
+                const name = page.createElement('h1');
+                name.className = 'profile-name';
+                name.textContent = 'Xubin Ren';
+                nameImage.closest('p').replaceWith(name);
+            }
+
+            const profileTable = page.querySelector('#left > table:first-of-type');
+            const contactParagraph = profileTable && Array.from(profileTable.querySelectorAll('p'))
+                .find((paragraph) => paragraph.textContent.includes('GitHub'));
+
+            if (contactParagraph) {
+                const existingLinks = Array.from(contactParagraph.querySelectorAll('a'));
+                const linkByName = Object.fromEntries(existingLinks.map((link) => [link.textContent.trim().toLowerCase(), link.href]));
+                const email = page.createElement('div');
+                const socials = page.createElement('nav');
+                const socialItems = [
+                    {
+                        label: 'GitHub',
+                        href: linkByName.github,
+                        icon: 'https://api.iconify.design/simple-icons:github.svg?color=%23181717'
+                    },
+                    {
+                        label: 'LinkedIn',
+                        href: linkByName.linkedin,
+                        icon: 'https://api.iconify.design/simple-icons:linkedin.svg?color=%230A66C2'
+                    },
+                    {
+                        label: 'Twitter',
+                        href: linkByName.twitter,
+                        icon: 'https://api.iconify.design/simple-icons:x.svg?color=%23111111'
+                    }
+                ];
+
+                email.className = 'contact-email';
+                email.textContent = 'xubinrencs AT gmail.com';
+                socials.className = 'social-links';
+                socials.setAttribute('aria-label', 'Social profiles');
+
+                socialItems.forEach((item) => {
+                    if (!item.href) return;
+                    const link = page.createElement('a');
+                    const icon = page.createElement('img');
+                    const label = page.createElement('span');
+
+                    link.className = 'social-link';
+                    link.href = item.href;
+                    link.target = '_blank';
+                    link.rel = 'noreferrer';
+                    icon.src = item.icon;
+                    icon.alt = '';
+                    label.textContent = item.label;
+                    link.append(icon, label);
+                    socials.append(link);
+                });
+
+                contactParagraph.replaceChildren(email, socials);
+            }
+
+            const originalNews = page.querySelector('#news');
+            const intro = page.querySelector('#left > div[style*="margin-top"]');
+
+            if (originalNews && intro) {
+                const dates = Array.from(originalNews.querySelectorAll('b'));
+                const originalCopies = Array.from(originalNews.querySelectorAll('.easylink'));
+                const copyOverrides = [
+                    'Named an AI25 AI Innovation Pioneer Under 25.',
+                    'Received the BAAI InnoVibe 2026 Most Notable Academic Rising Star award.',
+                    'MiniRAG accepted at ACL 2026 as a long paper.',
+                    'VideoRAG accepted at KDD 2026.',
+                    'Received the Ant InTech Scholarship — Future.',
+                    'Survey accepted at ACM TIST.',
+                    'Two papers accepted at EMNLP 2025.',
+                    'Received the WAIC Youth Outstanding Paper Nomination Award.',
+                    'Survey accepted at ACM Computing Surveys.',
+                    'Selected as a CAAI Rising Scientist.'
+                ];
+                const entries = dates.map((date, index) => {
+                    return {
+                        date: date.textContent.trim(),
+                        copy: copyOverrides[index] || originalCopies[index]?.textContent.trim() || ''
+                    };
+                });
+                const heading = page.createElement('h2');
+                const currentList = page.createElement('div');
+                const archive = page.createElement('details');
+                const summary = page.createElement('summary');
+                const archiveList = page.createElement('div');
+                const visibleNewsCount = 9;
+                const makeRow = (entry) => {
+                    const row = page.createElement('div');
+                    const date = page.createElement('time');
+                    const copy = page.createElement('div');
+                    row.className = 'news-item';
+                    date.className = 'news-date';
+                    copy.className = 'news-copy';
+                    date.textContent = entry.date;
+                    copy.textContent = entry.copy;
+                    row.append(date, copy);
+                    return row;
+                };
+
+                originalNews.className = 'news-sidebar';
+                originalNews.setAttribute('role', 'complementary');
+                originalNews.setAttribute('aria-label', 'News');
+                heading.textContent = 'News';
+                currentList.className = 'news-list';
+                entries.slice(0, visibleNewsCount).forEach((entry) => currentList.append(makeRow(entry)));
+                archive.className = 'news-archive';
+                archive.open = true;
+                archiveList.className = 'news-list';
+                summary.textContent = `View ${Math.max(entries.length - visibleNewsCount, 0)} earlier updates`;
+                entries.slice(visibleNewsCount).forEach((entry) => archiveList.append(makeRow(entry)));
+                archive.append(summary, archiveList);
+                originalNews.replaceChildren(heading, currentList, archive);
+
+                const mobileNews = originalNews.cloneNode(true);
+                mobileNews.removeAttribute('id');
+                mobileNews.className = 'news-mobile';
+                mobileNews.setAttribute('aria-label', 'News');
+                const mobileCurrentItems = Array.from(mobileNews.querySelector('.news-list').children);
+                const mobileArchiveList = mobileNews.querySelector('.news-archive .news-list');
+                const mobileArchiveSummary = mobileNews.querySelector('.news-archive summary');
+                const mobileArchive = mobileNews.querySelector('.news-archive');
+                const mobileArchivePrefix = page.createDocumentFragment();
+
+                mobileCurrentItems.slice(6).forEach((item) => mobileArchivePrefix.append(item));
+                mobileArchiveList.prepend(mobileArchivePrefix);
+                mobileArchive.removeAttribute('open');
+                mobileArchiveSummary.textContent = `View ${Math.max(entries.length - 6, 0)} earlier updates`;
+                intro.insertAdjacentElement('afterend', mobileNews);
+            }
+
+            const educationHeading = Array.from(page.querySelectorAll('h2'))
+                .find((heading) => heading.textContent.trim() === 'Education');
+            const schoolLogos = [
+                {
+                    alt: 'The University of Hong Kong shield',
+                    src: 'https://upload.wikimedia.org/wikipedia/en/3/32/University_of_Hong_Kong.svg'
+                },
+                {
+                    alt: 'Wuhan University logo',
+                    src: 'https://upload.wikimedia.org/wikipedia/en/6/68/Wuhan_University_Logo.png'
+                }
+            ];
+
+            if (educationHeading) {
+                let schoolTable = educationHeading.nextElementSibling;
+                schoolLogos.forEach((logo) => {
+                    while (schoolTable && schoolTable.tagName !== 'TABLE') {
+                        schoolTable = schoolTable.nextElementSibling;
+                    }
+
+                    if (!schoolTable) return;
+
+                    schoolTable.classList.add('education-table');
+                    const cell = schoolTable.querySelector('td');
+                    const copy = page.createElement('div');
+                    const mark = page.createElement('span');
+                    const image = page.createElement('img');
+
+                    copy.className = 'education-copy';
+                    mark.className = 'school-mark';
+                    image.src = logo.src;
+                    image.alt = logo.alt;
+                    image.loading = 'eager';
+
+                    while (cell.firstChild) copy.appendChild(cell.firstChild);
+                    mark.appendChild(image);
+                    cell.append(mark, copy);
+                    schoolTable = schoolTable.nextElementSibling;
+                });
+            }
+
+            const nanobotLogo = page.querySelector('img[src*="nanobot_logo"]');
+            if (nanobotLogo) {
+                nanobotLogo.src = 'https://raw.githubusercontent.com/HKUDS/nanobot/main/images/nanobot_logo.svg';
+                nanobotLogo.classList.add('nanobot-project-logo');
+                nanobotLogo.alt = 'nanobot';
+            }
+
+            const vimoLogo = page.querySelector('img[src*="vimo_logo"]');
+            if (vimoLogo) {
+                vimoLogo.classList.add('vimo-project-logo');
+            }
+
+            const sslrecLogo = page.querySelector('img[src*="sslrec_logo"]');
+            if (sslrecLogo) {
+                sslrecLogo.classList.add('sslrec-project-logo');
+            }
+
+            page.querySelectorAll('td.left').forEach((cell) => {
+                if (cell.querySelector('img[src*="pdf.png"]')) {
+                    cell.classList.add('publication-mark');
+                }
+            });
+
+            const fit = () => {
+                preview.style.height = `${page.documentElement.scrollHeight}px`;
+            };
+
+            stylesheet.addEventListener('load', fit);
+            window.addEventListener('resize', fit);
+            new ResizeObserver(fit).observe(page.documentElement);
+            fit();
+            requestAnimationFrame(() => window.scrollTo(0, 0));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,772 @@
+body {
+    color: #111;
+    background: #fdfdfd;
+    font: 400 16px/1.5 "Lora", serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 400;
+}
+
+.site-header {
+    border-top: 0;
+}
+
+.site-title,
+.site-title:visited {
+    color: #444;
+    text-decoration: none;
+}
+
+.site-title:hover {
+    color: #111;
+    text-decoration: none;
+}
+
+.site-nav .page-link[aria-current="page"] {
+    color: #111;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 6px;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.intro::after {
+    display: table;
+    clear: both;
+    content: "";
+}
+
+.intro p {
+    margin-bottom: 15px;
+    text-wrap: pretty;
+}
+
+.portrait {
+    float: right;
+    width: 225px;
+    aspect-ratio: 1;
+    margin: 0 0 22px 34px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.contact-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    color: #828282;
+    font-size: 15px;
+}
+
+.contact-item {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.contact-item i {
+    width: 16px;
+    color: #828282;
+    text-align: center;
+    font-size: 14px;
+}
+
+.section-block {
+    scroll-margin-top: 20px;
+    margin-top: 56px;
+}
+
+.section-block h2 {
+    margin-bottom: 22px;
+    font-size: 24px;
+}
+
+.section-lede {
+    max-width: 650px;
+    margin: -10px 0 28px;
+    color: #595959;
+}
+
+.timeline,
+.publication-list {
+    margin-left: 0;
+    list-style: none;
+}
+
+.timeline li {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.timeline time,
+.publication-meta {
+    color: #828282;
+    font-size: 13px;
+}
+
+.earlier-updates {
+    margin-top: 20px;
+}
+
+.earlier-updates summary {
+    width: max-content;
+    color: #4d74eb;
+    cursor: pointer;
+}
+
+.earlier-updates[open] summary {
+    margin-bottom: 18px;
+}
+
+.compact-entry h3 {
+    margin-bottom: 5px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.compact-entry p,
+.service-copy p {
+    margin-bottom: 8px;
+}
+
+.story-copy {
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.65;
+    text-wrap: pretty;
+}
+
+.story-copy p {
+    margin-bottom: 20px;
+}
+
+.story-beat {
+    display: grid;
+    grid-template-columns: 50px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.story-beat-copy > p:first-child {
+    margin-bottom: 7px;
+}
+
+.widow-lock {
+    white-space: nowrap;
+}
+
+.project-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.project-badges img {
+    display: block;
+    height: 20px;
+    width: auto;
+}
+
+.project-text-links {
+    margin-left: 4px;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.story-mark {
+    display: flex;
+    width: 50px;
+    height: 50px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.story-mark img {
+    display: block;
+    width: auto;
+    height: auto;
+}
+
+.story-mark-nanobot img {
+    width: 41px;
+}
+
+.story-mark-vimo img {
+    width: 43px;
+}
+
+.story-mark-sslrec img {
+    width: 32px;
+}
+
+.project-thesis {
+    margin-left: 68px;
+    color: #595959;
+}
+
+.section-heading-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.section-heading-row > a {
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.research-summary {
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.65;
+    text-wrap: pretty;
+}
+
+.research-summary > p {
+    margin-bottom: 20px;
+}
+
+.publication-venue {
+    color: #828282;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.two-column-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 54px;
+}
+
+.compact-entry {
+    margin-bottom: 22px;
+}
+
+.education-entry {
+    display: grid;
+    grid-template-columns: 50px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+}
+
+.school-mark {
+    display: flex;
+    width: 50px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+}
+
+.school-mark img {
+    display: block;
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+}
+
+.compact-entry p {
+    color: #444;
+    font-size: 14px;
+}
+
+.plain-list {
+    margin-left: 20px;
+}
+
+.plain-list li {
+    margin-bottom: 8px;
+}
+
+.section-more {
+    margin-top: 14px;
+    font-size: 14px;
+}
+
+.archive-intro {
+    max-width: 700px;
+    margin-bottom: 56px;
+}
+
+.archive-intro h1 {
+    margin-bottom: 12px;
+    font-size: 36px;
+    line-height: 1.25;
+}
+
+.archive-intro > p {
+    margin-bottom: 10px;
+    color: #595959;
+    text-wrap: pretty;
+}
+
+.archive-intro .archive-note {
+    color: #828282;
+    font-size: 13px;
+}
+
+.archive-section {
+    scroll-margin-top: 20px;
+    margin-top: 56px;
+}
+
+.archive-section > h2 {
+    margin-bottom: 28px;
+    font-size: 24px;
+}
+
+.archive-subheading {
+    margin: -8px 0 22px 122px;
+    color: #595959;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.archive-subheading--later {
+    margin-top: 42px;
+}
+
+.publication-archive,
+.award-archive {
+    margin: 0;
+    list-style: none;
+}
+
+.publication-entry {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.archive-venue,
+.award-entry time {
+    margin: 3px 0 0;
+    color: #828282;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.publication-entry h3,
+.award-entry h3 {
+    margin-bottom: 6px;
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.45;
+    text-wrap: pretty;
+}
+
+.publication-entry--distinguished h3 {
+    font-weight: 650;
+}
+
+.publication-entry--distinguished .archive-venue {
+    color: #444;
+}
+
+.publication-authors,
+.publication-note,
+.publication-links,
+.award-entry p {
+    margin-bottom: 5px;
+}
+
+.publication-authors,
+.award-entry p {
+    color: #444;
+    font-size: 14px;
+}
+
+.publication-note {
+    color: #828282;
+    font-size: 13px;
+}
+
+.publication-distinction {
+    display: flex;
+    gap: 6px;
+    margin: 7px 0 6px;
+    color: #765719;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.55;
+}
+
+.publication-distinction > span:first-child {
+    color: #a97516;
+}
+
+.publication-distinction-items {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.publication-distinction a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: rgba(118, 87, 25, 0.3);
+    text-underline-offset: 2px;
+}
+
+.publication-links {
+    font-size: 13px;
+}
+
+.publication-links a + a {
+    margin-left: 14px;
+}
+
+.award-entry {
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr);
+    gap: 22px;
+    margin-bottom: 24px;
+}
+
+.footer-col-wrapper {
+    display: grid;
+    grid-template-columns: 225px 1fr;
+    gap: 36px;
+    margin-left: 0;
+}
+
+.footer-col {
+    float: none;
+    width: auto;
+    padding-left: 0;
+}
+
+.contact-list a {
+    display: grid;
+    grid-template-columns: 20px auto;
+    gap: 6px;
+    align-items: center;
+    width: max-content;
+}
+
+.contact-list li + li {
+    padding-top: 4px;
+}
+
+.contact-icon {
+    width: 20px;
+    color: #828282;
+    text-align: center;
+    font-size: 14px;
+}
+
+.contact-list a:hover {
+    text-decoration: none;
+}
+
+.contact-list a:hover > span:last-child {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.footer-col-2 p {
+    margin-top: 0;
+}
+
+.blog-intro {
+    margin-bottom: 34px;
+}
+
+.blog-intro h1 {
+    margin-bottom: 6px;
+    font-size: 32px;
+}
+
+.blog-intro p,
+.post-summary {
+    color: #828282;
+}
+
+.blog-intro p {
+    margin-top: 0;
+}
+
+.post-list .post-summary {
+    max-width: 680px;
+    margin-top: 4px;
+}
+
+.post-tags {
+    color: #828282;
+    font-size: 13px;
+}
+
+.post-tags span:not(:last-child)::after {
+    margin: 0 6px;
+    content: "·";
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    font-size: 14px;
+}
+
+.post-header {
+    margin-bottom: 46px;
+}
+
+.post-title {
+    max-width: 760px;
+    margin-bottom: 14px;
+    font-size: 42px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+.post-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.post-meta-row .post-meta {
+    margin: 0;
+}
+
+.language-switch {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.language-switch [aria-current="page"] {
+    color: #111;
+    font-weight: 600;
+}
+
+.language-switch a {
+    color: #828282;
+}
+
+.post-header > .post-summary {
+    max-width: 710px;
+    margin-top: 18px;
+    font-size: 17px;
+    line-height: 1.65;
+    text-wrap: pretty;
+}
+
+.post-content {
+    max-width: 760px;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+.post-content h2 {
+    margin-top: 58px;
+    margin-bottom: 20px;
+    font-size: 28px;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+}
+
+.post-content h3 {
+    margin-top: 34px;
+    margin-bottom: 12px;
+    font-size: 21px;
+    line-height: 1.45;
+}
+
+.post-content p,
+.post-content ul,
+.post-content ol {
+    margin-bottom: 20px;
+}
+
+.post-content blockquote {
+    margin: 30px 0;
+    padding: 2px 0 2px 22px;
+    border-left: 2px solid #b9b9b9;
+    color: #555;
+    font-size: 18px;
+    font-style: italic;
+    letter-spacing: 0;
+}
+
+.post-content blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+.post-content table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    margin: 28px 0;
+    overflow-x: auto;
+    font-size: 15px;
+    line-height: 1.55;
+}
+
+.post-content th,
+.post-content td {
+    min-width: 120px;
+    padding: 9px 12px;
+    vertical-align: top;
+    text-align: left;
+}
+
+.post-content pre,
+.post-content .highlight {
+    border-radius: 0;
+}
+
+.post-content mjx-container[display="true"] {
+    margin: 1.5em 0 !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+
+@media screen and (max-width: 600px) {
+    .post-title {
+        font-size: 34px;
+    }
+
+    .post-header {
+        margin-bottom: 38px;
+    }
+
+    .post-meta-row {
+        align-items: flex-start;
+    }
+
+    .post-content {
+        font-size: 16px;
+        line-height: 1.75;
+    }
+
+    .post-content h2 {
+        margin-top: 48px;
+        font-size: 24px;
+    }
+
+    .post-content h3 {
+        font-size: 19px;
+    }
+
+    .portrait {
+        float: none;
+        display: block;
+        width: 176px;
+        margin: 0 auto 26px;
+    }
+
+    .section-block {
+        margin-top: 48px;
+    }
+
+    .timeline li {
+        grid-template-columns: 76px 1fr;
+        gap: 10px;
+    }
+
+    .story-copy {
+        font-size: 16px;
+    }
+
+    .research-summary {
+        font-size: 16px;
+    }
+
+    .story-beat {
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .story-mark {
+        width: 42px;
+        height: 46px;
+    }
+
+    .story-mark-nanobot img {
+        width: 38px;
+    }
+
+    .story-mark-vimo img {
+        width: 40px;
+    }
+
+    .story-mark-sslrec img {
+        width: 29px;
+    }
+
+    .project-thesis {
+        margin-left: 56px;
+    }
+
+    .two-column-section {
+        grid-template-columns: 1fr;
+        gap: 34px;
+    }
+
+    .archive-intro {
+        margin-bottom: 48px;
+    }
+
+    .archive-intro h1 {
+        font-size: 32px;
+    }
+
+    .publication-entry,
+    .award-entry {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .publication-entry {
+        margin-bottom: 32px;
+    }
+
+    .archive-venue,
+    .award-entry time {
+        margin-top: 0;
+    }
+
+    .archive-subheading {
+        margin-left: 0;
+    }
+
+    .footer-col-wrapper {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+}

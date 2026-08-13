@@ -1,0 +1,33 @@
+title: Xubin Ren
+description: Personal homepage and research notes by Xubin Ren.
+url: "https://ren-xubin.github.io"
+baseurl: ""
+timezone: Asia/Seoul
+author: Xubin Ren
+email: xubinrencs@gmail.com
+
+markdown: kramdown
+permalink: /blog/:year/:month/:day/:title/
+future: false
+theme: minima
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+minima:
+  date_format: "%b %-d, %Y"
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      preview_home: /chip-preview/
+
+exclude:
+  - BLOGGING.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor

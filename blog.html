@@ -1,0 +1,27 @@
+---
+layout: default
+title: Notes
+description: Notes on research, building, and PhD life.
+permalink: /blog/
+preview_home: /chip-preview/
+---
+<div class="home">
+    <header class="blog-intro">
+        <h1>Notes</h1>
+        <p>Research, building, PhD life.</p>
+    </header>
+
+    {% if site.posts.size > 0 %}
+    <ul class="post-list">
+        {% for post in site.posts %}
+        <li>
+            {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+            <span class="post-meta">{{ post.date | date: date_format }}</span>
+            <h2><a class="post-link" href="{{ post.url | relative_url }}">{{ post.title | escape }}</a></h2>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>No notes yet. The first one is on its way.</p>
+    {% endif %}
+</div>

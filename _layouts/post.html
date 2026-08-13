@@ -1,0 +1,36 @@
+---
+layout: default
+---
+<article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+    <header class="post-header">
+        <a class="back-link" href="{{ '/blog/' | relative_url }}">&larr; All posts</a>
+        <h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+        <div class="post-meta-row">
+            <p class="post-meta">
+                <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
+                    {% assign date_format = site.minima.date_format | default: "%b %-d, %Y" %}
+                    {{ page.date | date: date_format }}
+                </time>
+                {% if page.reading_time %}<span aria-hidden="true"> · </span>{{ page.reading_time }}{% endif %}
+            </p>
+            {% if page.english_url and page.chinese_url %}
+            <nav class="language-switch" aria-label="Article language">
+                {% if page.lang == 'zh' %}
+                <a href="{{ page.english_url | relative_url }}" hreflang="en">English</a>
+                <span aria-current="page">中文</span>
+                {% else %}
+                <span aria-current="page">English</span>
+                <a href="{{ page.chinese_url | relative_url }}" hreflang="zh-CN">中文</a>
+                {% endif %}
+            </nav>
+            {% endif %}
+        </div>
+        {% if page.summary %}<p class="post-summary">{{ page.summary }}</p>{% endif %}
+    </header>
+
+    <div class="post-content e-content" itemprop="articleBody">
+        {{ content }}
+    </div>
+
+    <a class="u-url" href="{{ page.url | relative_url }}" hidden></a>
+</article>

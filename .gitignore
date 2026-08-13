@@ -1,0 +1,6 @@
+.vercel
+.bundle/
+_site/
+.jekyll-cache/
+.jekyll-metadata
+vendor/

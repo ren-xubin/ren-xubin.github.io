@@ -34,6 +34,23 @@ BODY {
     WIDTH: 927px
 }
 
+.homepage-nav {
+    WIDTH: 100%;
+    MARGIN: 0px 0px 18px;
+    TEXT-ALIGN: right;
+    FONT-SIZE: 14px;
+    LINE-HEIGHT: 1.5
+}
+
+.homepage-nav A {
+    MARGIN-LEFT: 22px
+}
+
+.homepage-nav A[aria-current="page"] {
+    COLOR: #222;
+    FONT-WEIGHT: bold
+}
+
 H1 {
     FONT-SIZE: 30px;
     MARGIN: 0px;
