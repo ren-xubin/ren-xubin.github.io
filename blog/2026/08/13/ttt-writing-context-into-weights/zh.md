@@ -11,7 +11,7 @@ math: true
 reading_time: "约 9 分钟"
 english_url: /blog/2026/08/13/ttt-writing-context-into-weights/
 chinese_url: /blog/2026/08/13/ttt-writing-context-into-weights/zh/
-preview_home: /chip-preview/
+preview_home: /
 ---
 第一次看到 Test-Time Training（TTT）时，先想到的是一个很现实的问题：模型一边生成 token，一边还要改权重，这真的跑得动吗？如果更新本身比它要解决的问题还贵，想法再漂亮也没有用。
 

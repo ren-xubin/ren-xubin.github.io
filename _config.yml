@@ -24,7 +24,7 @@ defaults:
       type: posts
     values:
       layout: post
-      preview_home: /chip-preview/
+      preview_home: /
 
 exclude:
   - BLOGGING.md
